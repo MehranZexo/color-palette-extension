@@ -130,7 +130,10 @@
 
 <br>
 
-**قدم ۱:** پوشه‌ی پروژه رو دانلود یا Clone کن:
+**قدم ۱:**کل فایل رو دانلود کنید در مروگر  وارد بخش اکستنشن شوید Developer mode رو on کنید Load unpacked رو بزنید پوشه رو قرار بدید  و از اکستنشن ها بهش دسرسی خواهید داشت 
+ 
+
+**قدم 2:** پوشه‌ی پروژه رو دانلود یا Clone کن:
 
 ```bash
 git clone https://github.com/YOUR-USERNAME/color-palette-extension.git
