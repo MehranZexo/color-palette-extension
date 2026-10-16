@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استخراج پالت رنگ</title>
+    <link rel="stylesheet" href="palette.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <h1>🎨 استخراج پالت رنگ</h1>
+        <p class="subtitle">یه عکس بنداز، رنگ‌های اصلی‌اش رو بگیر</p>
+    </header>
+
+    <main class="container">
+
+        <!-- باکس آپلود -->
+        <section id="dropZone" class="drop-zone">
+            <div class="drop-zone__icon">📁</div>
+            <p class="drop-zone__title">عکس رو بکش و اینجا رها کن</p>
+            <p class="drop-zone__hint">یا</p>
+            <button id="chooseBtn" class="btn btn--primary" type="button">
+                انتخاب عکس از کامپیوتر
+            </button>
+            <input type="file" id="fileInput" accept="image/*" hidden>
+        </section>
+
+        <!-- پیش‌نمایش عکس -->
+        <section id="previewSection" class="preview hidden">
+            <div class="preview__image-wrap">
+                <canvas id="previewCanvas"></canvas>
+            </div>
+
+            <!-- پنل Upscale -->
+            <div class="upscale" id="upscalePanel">
+                <h3 class="upscale__title">🧠 ارتقای کیفیت با هوش مصنوعی (WebGPU)</h3>
+
+                <div class="upscale__row">
+                    <label for="upscaleType">نوع عکس:</label>
+                    <select id="upscaleType">
+                        <option value="rl">📷 عکس واقعی (Real Life)</option>
+                        <option value="an">🎨 کارتونی / انیمه</option>
+                    </select>
+                </div>
+
+                <div class="upscale__row">
+                    <button id="upscaleBtn" class="btn btn--primary" type="button">
+                        🪄 ارتقای کیفیت (۲x)
+                    </button>
+                    <span id="upscaleStatus" class="upscale__status"></span>
+                </div>
+
+                <p class="upscale__hint">
+                    ⚠️ اولین بار مدل دانلود می‌شه (~۲.۵ مگابایت). بعدش کش می‌شه.
+                </p>
+            </div>
+
+            <!-- پنل تغییر اندازه -->
+            <div class="resize" id="resizePanel">
+                <div class="resize__row">
+                    <label for="resizeWidth">عرض (px)</label>
+                    <input type="number" id="resizeWidth" min="1" step="1">
+                </div>
+
+                <div class="resize__row">
+                    <label for="resizeHeight">ارتفاع (px)</label>
+                    <input type="number" id="resizeHeight" min="1" step="1">
+                </div>
+
+                <div class="resize__row resize__row--lock">
+                    <label class="toggle">
+                        <input type="checkbox" id="lockAspect" checked>
+                        <span>قفل نسبت ابعاد</span>
+                    </label>
+                </div>
+
+                <div class="resize__row resize__row--presets">
+                    <button class="btn btn--ghost resize-preset" data-scale="0.25" type="button">۲۵٪</button>
+                    <button class="btn btn--ghost resize-preset" data-scale="0.5" type="button">۵۰٪</button>
+                    <button class="btn btn--ghost resize-preset" data-scale="1" type="button">۱۰۰٪</button>
+                    <button class="btn btn--ghost resize-preset" data-scale="1.5" type="button">۱۵۰٪</button>
+                    <button class="btn btn--ghost resize-preset" data-scale="2" type="button">۲۰۰٪</button>
+                </div>
+            </div>
+
+            <!-- پنل فیلترها -->
+            <div class="filters" id="filtersPanel">
+
+                <div class="filters__row">
+                    <label for="filterBrightness">روشنایی <span class="badge" id="brightnessVal">100</span></label>
+                    <input type="range" id="filterBrightness" min="0" max="200" value="100">
+                </div>
+
+                <div class="filters__row">
+                    <label for="filterContrast">کنتراست <span class="badge" id="contrastVal">100</span></label>
+                    <input type="range" id="filterContrast" min="0" max="200" value="100">
+                </div>
+
+                <div class="filters__row">
+                    <label for="filterSaturation">اشباع رنگ <span class="badge" id="saturationVal">100</span></label>
+                    <input type="range" id="filterSaturation" min="0" max="200" value="100">
+                </div>
+
+                <div class="filters__row">
+                    <label for="filterHue">چرخش رنگ <span class="badge" id="hueVal">0</span></label>
+                    <input type="range" id="filterHue" min="0" max="360" value="0">
+                </div>
+
+                <div class="filters__row">
+                    <label for="filterSharpen">شارپ‌نس <span class="badge" id="sharpenVal">0</span></label>
+                    <input type="range" id="filterSharpen" min="0" max="100" value="0">
+                </div>
+
+                <div class="filters__row filters__row--toggles">
+                    <label class="toggle">
+                        <input type="checkbox" id="filterGrayscale">
+                        <span>سیاه و سفید</span>
+                    </label>
+                    <button id="resetFiltersBtn" class="btn btn--ghost" type="button">
+                        🔄 ریست فیلترها
+                    </button>
+                </div>
+
+            </div>
+
+
+            <div class="preview__actions">
+                <button id="extractBtn" class="btn btn--success" type="button">
+                    ✨ استخراج پالت رنگ
+                </button>
+                <button id="downloadImageBtn" class="btn btn--primary" type="button">
+                    ⬇️ دانلود عکس
+                </button>
+                <button id="resetBtn" class="btn btn--ghost" type="button">
+                    🔄 عکس جدید
+                </button>
+            </div>
+        </section>
+
+        <!-- محل نمایش پالت (قدم بعدی) -->
+        <section id="paletteSection" class="palette hidden">
+            <div class="palette__header">
+                <h2>پالت رنگی</h2>
+                <div class="palette__toolbar">
+
+                    <!-- تعداد رنگ -->
+                    <div class="toolbar-group">
+                        <label for="colorCount">تعداد رنگ:</label>
+                        <input type="range" id="colorCount" min="3" max="12" value="8" step="1">
+                        <span id="colorCountLabel" class="badge">8</span>
+                    </div>
+
+                    <!-- فرمت کپی -->
+                    <div class="toolbar-group">
+                        <label>فرمت کپی:</label>
+                        <div class="format-switch" id="formatSwitch">
+                            <button class="format-btn is-active" data-format="hex">HEX</button>
+                            <button class="format-btn" data-format="rgb">RGB</button>
+                            <button class="format-btn" data-format="hsl">HSL</button>
+                        </div>
+                    </div>
+
+                    <!-- دانلود -->
+                    <button id="downloadBtn" class="btn btn--ghost" type="button">
+                        ⬇️ دانلود پالت
+                    </button>
+
+                </div>
+            </div>
+            <div id="paletteGrid" class="palette__grid"></div>
+        </section>
+
+    </main>
+    <script src="../lib/filters.js"></script>
+    <script src="../lib/resize.js"></script>
+    <script src="../lib/extractor.js"></script>
+    <script src="palette.js"></script>
+</body>
+
+</html>
